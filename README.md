@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lumber Intelligence — Next.js
 
-## Getting Started
+This directory contains the Next.js App Router rebuild of Lumber Intelligence. It preserves the Phase 1 workbook import, market dashboard, quote history, market and mill drill-downs, destination-scoped mill comparison, Command-K search, freshness settings, alias review, and additive backup/restore.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The health endpoint is available at `/api/health`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verify
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+npm run lint
+npm run typecheck
+npm run build
+```
 
-## Learn More
+To run the additional real-workbook regression without copying the private XLSX into Git:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+LUMBER_REFERENCE_WORKBOOK="/absolute/path/to/Lumber Quote Tracker.xlsx" npm test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Data behavior
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Current intelligence uses the Mac/browser calendar date and configurable freshness thresholds.
+- Blank, zero, `NQ`, unavailable, stale, or unresolved observations are never shown as current prices.
+- Workbook imports are cumulative and fingerprinted. Raw workbook/sheet/row provenance is retained.
+- Existing data is stored in browser local storage in this migration stage. Settings → Export backup produces a complete JSON backup; restore is additive and never overwrites existing quote records.
 
-## Deploy on Vercel
+## Cloud-ready boundary
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The App Router shell and health route make the project ready for Vercel. PostgreSQL, authentication, private workbook storage, and the one-time local-data migration are intentionally not connected yet; those require deployment credentials and a deliberate data migration. See [docs/architecture.md](docs/architecture.md).
